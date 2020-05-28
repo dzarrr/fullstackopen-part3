@@ -71,6 +71,12 @@ let persons = [
   }
 ]
 
+const generateId = () => {
+  const randomId = Math.floor(Math.random() * 10000000)
+  
+  return randomId
+}
+
 app.get('/', (req, res) => {
   res.send('<h1>Welcome to phonebook API!</h1>')
 })
@@ -102,6 +108,20 @@ app.delete('/api/persons/:id', (req, res) => {
   persons = persons.filter(p => p.id !== id)
 
   res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId()
+  }
+
+  persons = persons.concat(person)
+
+  res.json(person)
 })
 
 const PORT = 3001
