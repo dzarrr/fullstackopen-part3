@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.static('build'))
@@ -13,74 +16,6 @@ morgan.token('body', (req, res) => {
 })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let persons = [
-  {
-    "name": "John Lomboh",
-    "number": "990099",
-    "id": 10
-  },
-  {
-    "name": "Dem-Ta",
-    "number": "911",
-    "id": 11
-  },
-  {
-    "name": "Ghislaine Maxwell",
-    "number": "121212121",
-    "id": 12
-  },
-  {
-    "name": "Obnoxious Ad",
-    "number": "99900022",
-    "id": 14
-  },
-  {
-    "name": "Mibmb",
-    "number": "231313131",
-    "id": 17
-  },
-  {
-    "name": "Noba",
-    "number": "1212123`3",
-    "id": 18
-  },
-  {
-    "name": "Binomo",
-    "number": "2414141",
-    "id": 19
-  },
-  {
-    "name": "Mib",
-    "number": "323131",
-    "id": 20
-  },
-  {
-    "name": "Meet me in",
-    "number": "21231",
-    "id": 21
-  },
-  {
-    "name": "Under Control",
-    "number": "231313131",
-    "id": 23
-  },
-  {
-    "name": "Nick Kasabian",
-    "number": "31233131",
-    "id": 24
-  },
-  {
-    "name": "Joe Jonas",
-    "number": "21313131",
-    "id": 25
-  },
-  {
-    "name": "Herbert Groove",
-    "number": "08313131131",
-    "id": 27
-  }
-]
-
 const generateId = () => {
   const randomId = Math.floor(Math.random() * 10000000)
   
@@ -88,18 +23,15 @@ const generateId = () => {
 }
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person.find({}).then(people => {
+    res.json(people)
+  })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  person = persons.find(p => p.id === id)
-
-  if (person) {
+  Person.findById(req.params.id).then(person => {
     res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  })
 })
 
 app.get('/info', (req, res) => {
